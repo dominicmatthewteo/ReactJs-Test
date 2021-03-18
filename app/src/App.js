@@ -6,11 +6,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 function App() {
   const [InputCity, setInputCity] = useState("");
   const [InputCountry, setInputCountry] = useState("");
   const [WeatherData, setWeatherData] = useState(null);
+  const [SearchHistory, setSearchHistory] = useState([]);
   // GetWeather("Singapore", "Singapore");
   return (
     <>
@@ -42,7 +44,7 @@ function App() {
                 onChange={e => setInputCountry(e.target.value)}
               />
               <Button type="submit" className="mb-2 mr-2">Search</Button>
-              <Button type="button" className="mb-2 mr-2">Clear</Button>
+              <Button type="button" className="mb-2 mr-2" onClick={()=>{ setInputCity(""); setInputCountry(""); }}>Clear</Button>
             </Form>
           </Col>
         </Row>
@@ -56,21 +58,32 @@ function App() {
                 <p>Description: {WeatherData.desc}</p>
                 <p>Temperature: {WeatherData.temp}</p>
                 <p>Humidity: {WeatherData.hum}</p>
-                <p>Time: {Moment(WeatherData.datetime).format('YYYY-MM-DD hh:mm A')}</p>
+                <p>Time: {Moment(WeatherData.datetime).format('YYYY-MM-DD hh:mm:ss A')}</p>
               </div>
               : // else
               <p>No results found.</p>
             }
           </Col>
         </Row>
-        <Row>
+        <Row className="mt-3">
           <Col className="border-bottom">
             <h3>Recent Search</h3>
           </Col>
         </Row>
-        <Row>
+        <Row className="py-3">
           <Col>
-            Listing goes here (Map Array)
+            { (SearchHistory) ?
+              [...SearchHistory].reverse().map((history, index)=> { return(
+                <div key={index}>
+                  <p>{index+1}. {history.city}, {history.country}</p>
+                  {Moment(history.datetime).format('YYYY-MM-DD hh:mm:ss A')}
+                  <Button type="button" onClick={()=>{ viewSearchHistory(history) }}>View</Button>
+                  <Button type="button" onClick={()=>{ deleteSearchHistory(index) }}>Delete</Button>
+                </div>
+              )})
+              :
+              <p>-empty-</p>
+            }
           </Col>
         </Row>
       </Container>
@@ -83,9 +96,8 @@ function App() {
     fetch('https://api.openweathermap.org/data/2.5/weather?q='+(City+','+Country)+'&appid=8042cb88f0b49b34adf3ea08fc61aceb')
     .then(response => response.json())
     .then(data => {
-      console.log(data.weather[0].main, data.weather[0].description, data.main.temp_min + "~" + data.main.temp_max);
       var timeNow = new Date();
-      setWeatherData({
+      var objWeather = {
         city: data.name,
         country: data.sys.country,
         weather: data.weather[0].main,
@@ -93,18 +105,34 @@ function App() {
         temp: data.main.temp_min + "~" + data.main.temp_max,
         hum: data.main.humidity + "%",
         datetime: timeNow
-      });
+      }
+      console.log(objWeather);
+      setWeatherData(objWeather);
+      addSearchHistory(objWeather);
     })
     .catch((error) => {
       console.error('Error:', error);
     });
   };
   // Search Form Handler
-  function onSubmitSearch(e) {
+  function onSubmitSearch (e) {
     e.preventDefault();
     e.stopPropagation();
     // console.log(InputCity, InputCountry);
     GetWeather(InputCity, InputCountry);
+  }
+  // Search Weather History
+  // Add History Handler
+  function addSearchHistory(obj) {
+    setSearchHistory(SearchHistory.concat(obj));
+  }
+  function deleteSearchHistory(index) {
+    setSearchHistory(SearchHistory.slice(index, 1));
+  }
+  function viewSearchHistory(obj) {
+    console.log(obj);
+    setWeatherData(obj);
+    setInputCity(""); setInputCountry("");
   }
 } // ENDOF APP
 export default App;
