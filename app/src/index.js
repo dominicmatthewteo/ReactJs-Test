@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 
 // Include Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 // Include custom CSS
 import './styles.min.css';

@@ -6,7 +6,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 
 function App() {
   const [InputCity, setInputCity] = useState("");
@@ -19,7 +18,7 @@ function App() {
       <Container className="py-3">
         <Row>
           <Col className="border-bottom">
-            <h2>Weather in your city</h2>
+            <h2>Today's Weather</h2>
           </Col>
         </Row>
         <Row>
@@ -53,12 +52,28 @@ function App() {
             { (WeatherData) ?
               // city, country, weather, desc, temp, hum, datetime
               <div>
-                <p className="text-muted">{WeatherData.city}, {WeatherData.country}</p>
-                <p>{WeatherData.weather}</p>
-                <p>Description: {WeatherData.desc}</p>
-                <p>Temperature: {WeatherData.temp}</p>
-                <p>Humidity: {WeatherData.hum}</p>
-                <p>Time: {Moment(WeatherData.datetime).format('YYYY-MM-DD hh:mm:ss A')}</p>
+                <span className="text-muted">{WeatherData.city}, {WeatherData.country}</span>
+                <h1>{WeatherData.weather}</h1>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td className="text-muted" width="120">Description:</td>
+                      <td>{WeatherData.desc}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-muted">Temperature:</td>
+                      <td>{WeatherData.temp}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-muted">Humidity:</td>
+                      <td>{WeatherData.hum}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-muted">Time:</td>
+                      <td>{Moment(WeatherData.datetime).format('YYYY-MM-DD hh:mm:ss A')}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
               : // else
               <p>No results found.</p>
@@ -67,18 +82,20 @@ function App() {
         </Row>
         <Row className="mt-3">
           <Col className="border-bottom">
-            <h3>Recent Search</h3>
+            <h3>Search History</h3>
           </Col>
         </Row>
         <Row className="py-3">
           <Col>
             { (SearchHistory) ?
               [...SearchHistory].reverse().map((history, index)=> { return(
-                <div key={index}>
-                  <p>{index+1}. {history.city}, {history.country}</p>
-                  {Moment(history.datetime).format('YYYY-MM-DD hh:mm:ss A')}
-                  <Button type="button" onClick={()=>{ viewSearchHistory(history) }}>View</Button>
-                  <Button type="button" onClick={()=>{ deleteSearchHistory(index) }}>Delete</Button>
+                <div key={index} className="d-inline-block w-100 py-2 mb-1 border-bottom">
+                  <p className="float-left">{index+1}. {history.city}, {history.country}</p>
+                  <div className="float-right">
+                    {Moment(history.datetime).format('hh:mm:ss A')}
+                    <Button type="button" className="btn-secondary rounded-circle ml-2" onClick={()=>{ viewSearchHistory(history) }}><i className="bi bi-search"></i></Button>
+                    <Button type="button" className="btn-secondary rounded-circle ml-2" onClick={()=>{ deleteSearchHistory(index) }}><i className="bi bi-trash"></i></Button>
+                  </div>
                 </div>
               )})
               :
