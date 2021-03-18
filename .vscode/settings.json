@@ -1,0 +1,14 @@
+{
+    "compile-hero.generate-minified-css": true,
+    "compile-hero.generate-minified-css-only": true,
+    "compile-hero.jade-output-toggle": false,
+    "compile-hero.javascript-output-toggle": false,
+    "compile-hero.less-output-toggle": false,
+    "compile-hero.sass-output-toggle": false,
+    "compile-hero.pug-output-toggle": false,
+    "compile-hero.scss-output-directory": "../",
+    "compile-hero.stylus-output-toggle": false,
+    "compile-hero.typescript-output-toggle": false,
+    "compile-hero.typescriptx-output-toggle": false,
+    "compile-hero.disable-compile-files-on-did-save-code": false
+}
