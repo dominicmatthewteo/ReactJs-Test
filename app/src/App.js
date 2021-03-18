@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 function App() {
   const [InputCity, setInputCity] = useState("");
   const [InputCountry, setInputCountry] = useState("");
-  const [WeatherData, setWeatherData] = useState(null);
+  const [WeatherData, setWeatherData] = useState("");
   const [SearchHistory, setSearchHistory] = useState([]);
   // GetWeather("Singapore", "Singapore");
   return (
@@ -49,9 +49,11 @@ function App() {
         </Row>
         <Row>
           <Col>
-            { (WeatherData) ?
+            { (WeatherData === "") ?
+              <p>Search a City and Country to begin.</p>
               // city, country, weather, desc, temp, hum, datetime
-              <div>
+              : (WeatherData) ?
+               <div>
                 <span className="text-muted">{WeatherData.city}, {WeatherData.country}</span>
                 <h1>{WeatherData.weather}</h1>
                 <table>
@@ -87,7 +89,7 @@ function App() {
         </Row>
         <Row className="py-3">
           <Col>
-            { (SearchHistory) ?
+            { (SearchHistory) &&
               [...SearchHistory].reverse().map((history, index)=> { return(
                 <div key={index} className="d-inline-block w-100 py-2 mb-1 border-bottom">
                   <p className="float-left">{index+1}. {history.city}, {history.country}</p>
@@ -98,8 +100,6 @@ function App() {
                   </div>
                 </div>
               )})
-              :
-              <p>-empty-</p>
             }
           </Col>
         </Row>
@@ -129,6 +129,7 @@ function App() {
     })
     .catch((error) => {
       console.error('Error:', error);
+      setWeatherData(null);
     });
   };
   // Search Form Handler
